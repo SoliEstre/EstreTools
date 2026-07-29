@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * mdBrown — Markdown → self-contained HTML report.
+ * mdbrown — Markdown → self-contained HTML report.
  *
  * No dependencies, no network, no build step. Emits one HTML file with all CSS
  * inlined, so it renders identically offline, on an intranet, or as an email
@@ -251,7 +251,7 @@ const html = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="generator" content="mdBrown">
+<meta name="generator" content="mdbrown">
 <title>${esc(docTitle)}</title>
 <style>
 :root{
@@ -350,5 +350,5 @@ ${nav}
 `;
 
 fs.writeFileSync(OUT, html, 'utf8');
-console.log('mdBrown → ' + OUT);
+console.log('mdbrown → ' + OUT);
 console.log('  blocks ' + out.length + ' · sections ' + toc.length + ' · ' + Buffer.byteLength(html) + ' bytes');

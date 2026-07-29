@@ -31,4 +31,4 @@ If the PDF is scanned or image-only there is no text layer to recover; say that
 outright rather than returning something that looks like a result.
 
 To carry the recovered Markdown on to a styled HTML report, hand off to
-**mdBrown**.
+**mdbrown**.

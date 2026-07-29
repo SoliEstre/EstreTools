@@ -1,4 +1,4 @@
-# mdBrown
+# mdbrown
 
 Markdown → **one self-contained HTML report**.
 
@@ -10,7 +10,7 @@ the same everywhere.
 
 ```bash
 /plugin marketplace add SoliEstre/EstreTools
-/plugin install mdBrown@estretools
+/plugin install mdbrown@estretools
 ```
 
 Or just run the script — it is plain Node with zero dependencies:
@@ -82,7 +82,7 @@ OK   text identical, nothing lost or duplicated.
 
 Warnings do not fail the run unless you pass `--strict`. Fix them in the
 **source** — escape the literals (`\*\*\*\*`) or wrap them in backticks. Every
-CommonMark renderer hits this, not just mdBrown.
+CommonMark renderer hits this, not just mdbrown.
 
 ## Why a script rather than a prompt
 

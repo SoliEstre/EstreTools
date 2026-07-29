@@ -5,8 +5,8 @@
     "url": "https://github.com/SoliEstre"
   },
   "metadata": {
-    "version": "0.1.2",
-    "description": "Small, sharp document tools for Claude Code. Each plugin draws the line in the same place: deterministic work goes in a dependency-free Node script, judgement stays in the skill, and nothing is reported as done until a verifier proves the text survived. **md-in-pdf2md** recovers the original Markdown from a PDF that was printed from Markdown — dual-mode pdftotext extraction exposes every line-wrap junction, the skill resolves each as a language judgement (CJK breaks anywhere, so `가맹본`+`부` joins but `동시에`+`서울` does not), and a character-level gate proves nothing was lost. **mdBrown** renders Markdown into one self-contained HTML report — all CSS inlined, zero external requests, light/dark aware, CJK-tuned typography, sticky section index, separate print stylesheet. Both scripts also run standalone with plain `node`, no install. Install: `/plugin marketplace add SoliEstre/EstreTools` then `/plugin install md-in-pdf2md@estretools`."
+    "version": "0.2.0",
+    "description": "Small, sharp document tools for Claude Code. Each plugin draws the line in the same place: deterministic work goes in a dependency-free Node script, judgement stays in the skill, and nothing is reported as done until a verifier proves the text survived. **md-in-pdf2md** recovers the original Markdown from a PDF that was printed from Markdown — dual-mode pdftotext extraction exposes every line-wrap junction, the skill resolves each as a language judgement (CJK breaks anywhere, so `가맹본`+`부` joins but `동시에`+`서울` does not), and a character-level gate proves nothing was lost. **mdbrown** renders Markdown into one self-contained HTML report — all CSS inlined, zero external requests, light/dark aware, CJK-tuned typography, sticky section index, separate print stylesheet. Both scripts also run standalone with plain `node`, no install. Install: `/plugin marketplace add SoliEstre/EstreTools` then `/plugin install md-in-pdf2md@estretools`."
   },
   "plugins": [
     {
@@ -25,8 +25,8 @@
       ]
     },
     {
-      "name": "mdBrown",
-      "source": "./plugins/mdBrown",
+      "name": "mdbrown",
+      "source": "./plugins/mdbrown",
       "description": "Markdown → one self-contained HTML report. Every style inlined, no CDN or fonts fetched, light/dark aware, CJK-tuned typography, responsive tables, sticky section index, and a print stylesheet that renders back to a clean PDF. Deterministic, so a document set stays visually consistent.",
       "category": "productivity",
       "tags": [

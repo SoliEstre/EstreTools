@@ -14,7 +14,7 @@ description: >
   React/Vue component — this produces one standalone document.
 ---
 
-# mdBrown
+# mdbrown
 
 ## Run the script — do not hand-write the HTML
 

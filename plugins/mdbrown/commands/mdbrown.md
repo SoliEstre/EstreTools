@@ -11,7 +11,7 @@ path — without it, the output is the input path with `.html`. Remaining flags
 pass straight through: `--no-toc`, `--title <text>`, `--lang <code>`. If no
 input path was given, ask for one rather than guessing.
 
-Invoke the **`mdBrown:mdbrown`** skill and follow its procedure. The skill is the
+Invoke the **`mdbrown:mdbrown`** skill and follow its procedure. The skill is the
 single source of truth for the script paths, the verification gate and the
 reporting rules; this command exists only so the work can be asked for
 explicitly instead of inferred from intent.

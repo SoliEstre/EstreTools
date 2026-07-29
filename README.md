@@ -6,7 +6,7 @@ Two plugins, one pipeline: **get a real Markdown file back out of a PDF**, then
 **turn Markdown into a report you can actually send someone**.
 
 ```
-report.pdf  ──md-in-pdf2md──▶  report.md  ──mdBrown──▶  report.html
+report.pdf  ──md-in-pdf2md──▶  report.md  ──mdbrown──▶  report.html
 ```
 
 Each stage ends with a verifier that compares character streams. Nothing here
@@ -19,7 +19,7 @@ reports success on a vibe.
 ```bash
 /plugin marketplace add SoliEstre/EstreTools
 /plugin install md-in-pdf2md@estretools
-/plugin install mdBrown@estretools
+/plugin install mdbrown@estretools
 ```
 
 Then restart Claude Code.
@@ -37,8 +37,8 @@ The scripts also run **standalone** — plain Node, no dependencies, no install:
 
 ```bash
 node plugins/md-in-pdf2md/scripts/pdfextract.cjs  report.pdf --out .work
-node plugins/mdBrown/scripts/mdbrown.cjs          report.md  report.html
-node plugins/mdBrown/scripts/verify-html.cjs      report.md  report.html
+node plugins/mdbrown/scripts/mdbrown.cjs          report.md  report.html
+node plugins/mdbrown/scripts/verify-html.cjs      report.md  report.html
 ```
 
 ---
@@ -84,7 +84,7 @@ otherwise `winget install oschwartz10612.Poppler`, `brew install poppler`, or
 
 ---
 
-## mdBrown — Markdown → HTML
+## mdbrown — Markdown → HTML
 
 One file. All CSS inlined. No CDN, no webfont fetch, no build step, no
 `node_modules`. Open it offline, drop it on an intranet share, attach it to

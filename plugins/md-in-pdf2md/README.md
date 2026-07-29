@@ -85,7 +85,7 @@ accept the flags used here.
 
 ## Pairs with
 
-[**mdBrown**](../mdBrown) — turn the recovered Markdown into a self-contained
+[**mdbrown**](../mdbrown) — turn the recovered Markdown into a self-contained
 HTML report.
 
 MIT © SoliEstre

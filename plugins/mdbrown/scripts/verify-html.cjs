@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * mdBrown verify — assert the rendered HTML carries exactly the Markdown's text,
+ * mdbrown verify — assert the rendered HTML carries exactly the Markdown's text,
  * and flag source constructs whose rendering is ambiguous.
  *
  * Two independent checks:
@@ -151,7 +151,7 @@ if (warnings.length) {
     console.log('        ' + w.text);
   }
   console.log('\n  Fix in the SOURCE — escape the literal characters (\\*\\*\\*\\*) or');
-  console.log('  wrap them in backticks. Every CommonMark renderer hits this, not just mdBrown.');
+  console.log('  wrap them in backticks. Every CommonMark renderer hits this, not just mdbrown.');
 } else {
   console.log('OK   no ambiguous emphasis in source.');
 }

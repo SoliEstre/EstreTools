@@ -103,7 +103,7 @@ few thousand characters does not catch a swallowed table cell.
 Write `<same-name>.md` beside the PDF unless the user says otherwise. Leave the
 PDF in place.
 
-To continue on to a styled HTML report, hand off to **mdBrown**.
+To continue on to a styled HTML report, hand off to **mdbrown**.
 
 ## Requirements
 
