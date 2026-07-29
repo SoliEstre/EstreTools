@@ -1,6 +1,6 @@
 {
   "name": "mdBrown",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Render Markdown into one self-contained HTML report — all CSS inlined, zero external requests, light/dark aware, CJK-tuned typography, sticky section index, and a separate print stylesheet. Deterministic by design: the same Markdown always produces the same page, so a document set stays visually consistent. Ships a verifier that checks text equality and lints the source for ambiguous emphasis, the one defect class text comparison cannot see.",
   "author": {
     "name": "SoliEstre",

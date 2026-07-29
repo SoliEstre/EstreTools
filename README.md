@@ -24,6 +24,15 @@ reports success on a vibe.
 
 Then restart Claude Code.
 
+Each plugin ships a skill and a command. Ask in passing — *"이 pdf를 md로
+옮겨줘"*, *"이걸 html로 뽑아줘"* — and the skill picks the work up on its own; the
+commands are there for when you want to say so explicitly:
+
+```bash
+/pdf2md   report.pdf
+/mdbrown  report.md
+```
+
 The scripts also run **standalone** — plain Node, no dependencies, no install:
 
 ```bash

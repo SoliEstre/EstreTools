@@ -1,6 +1,6 @@
 {
   "name": "md-in-pdf2md",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Recover the original Markdown from a PDF that was printed from Markdown. Dual-mode pdftotext extraction exposes every line-wrap junction, the skill resolves each one as a language judgement, and a character-level gate proves nothing was lost, duplicated, or invented.",
   "author": {
     "name": "SoliEstre",

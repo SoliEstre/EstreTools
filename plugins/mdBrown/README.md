@@ -19,6 +19,21 @@ Or just run the script — it is plain Node with zero dependencies:
 node scripts/mdbrown.cjs input.md [output.html] [--no-toc] [--title "…"] [--lang ko]
 ```
 
+## Use it
+
+Ask for it in passing — *"이걸 html로 뽑아줘"*, *"turn this into a report"* — and
+the skill picks the work up on its own.
+
+To be explicit, or to be sure the script runs rather than the model improvising a
+page, call the command:
+
+```bash
+/mdbrown report.md
+```
+
+Same arguments as the script. The command is a thin entry point: it invokes the
+skill, which holds the procedure.
+
 ## What you get
 
 - **Light and dark** via `prefers-color-scheme`

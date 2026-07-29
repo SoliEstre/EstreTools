@@ -13,6 +13,20 @@ source back.
 /plugin install md-in-pdf2md@estretools
 ```
 
+## Use it
+
+Ask for it in passing — *"이 pdf를 md로 옮겨줘"*, *"give me the markdown back"* —
+and the skill picks the work up on its own.
+
+To be explicit, call the command:
+
+```bash
+/pdf2md report.pdf
+```
+
+The command is a thin entry point: it invokes the skill, which holds the
+procedure.
+
 ## The problem it solves
 
 Such a PDF has lost exactly one thing — **line structure**. Every character
