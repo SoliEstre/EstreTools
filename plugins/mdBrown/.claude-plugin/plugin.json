@@ -1,0 +1,25 @@
+{
+  "name": "mdBrown",
+  "version": "0.1.0",
+  "description": "Render Markdown into one self-contained HTML report — all CSS inlined, zero external requests, light/dark aware, CJK-tuned typography, sticky section index, and a separate print stylesheet. Deterministic by design: the same Markdown always produces the same page, so a document set stays visually consistent.",
+  "author": {
+    "name": "SoliEstre",
+    "url": "https://github.com/SoliEstre"
+  },
+  "homepage": "https://github.com/SoliEstre/EstreTools",
+  "repository": "https://github.com/SoliEstre/EstreTools",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "html",
+    "md2html",
+    "report",
+    "static",
+    "self-contained",
+    "offline",
+    "print",
+    "dark-mode",
+    "korean",
+    "cjk"
+  ]
+}

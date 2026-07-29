@@ -1,0 +1,12 @@
+node_modules/
+
+# pdfextract.cjs working directory
+.md-in-pdf2md/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+.idea/
+.vscode/
