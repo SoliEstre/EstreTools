@@ -42,14 +42,19 @@ if (!SRC) {
   process.exit(2);
 }
 
+// Probe for the binary, not for a zero exit status: Xpdf's pdftotext exits 99
+// on -v, poppler's exits 0. Only ENOENT means it is actually missing.
 try {
   execFileSync('pdftotext', ['-v'], { stdio: 'ignore' });
-} catch {
-  console.error('pdftotext not found. Install poppler-utils:');
-  console.error('  Windows  winget install oschwartz10612.Poppler   (or use Git Bash bundled build)');
-  console.error('  macOS    brew install poppler');
-  console.error('  Linux    apt install poppler-utils');
-  process.exit(3);
+} catch (e) {
+  if (e && (e.code === 'ENOENT' || e.errno === 'ENOENT')) {
+    console.error('pdftotext not found on PATH. Install poppler-utils or Xpdf:');
+    console.error('  Windows  winget install oschwartz10612.Poppler   (Git Bash also ships a build)');
+    console.error('  macOS    brew install poppler');
+    console.error('  Linux    apt install poppler-utils');
+    process.exit(3);
+  }
+  // any other failure just means this build reports its version differently
 }
 
 const base = path.basename(SRC).replace(/\.pdf$/i, '');

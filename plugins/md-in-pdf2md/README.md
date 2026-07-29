@@ -60,7 +60,8 @@ it. Confirm each, then treat as clean. Any `FAIL` is a genuine defect.
 
 ## Requires
 
-`pdftotext` (poppler-utils) on PATH.
+`pdftotext` on PATH — either the poppler-utils build or the Xpdf one; both
+accept the flags used here.
 
 | Platform | |
 |---|---|

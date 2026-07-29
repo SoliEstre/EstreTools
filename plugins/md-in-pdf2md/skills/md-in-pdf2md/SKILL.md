@@ -107,6 +107,7 @@ To continue on to a styled HTML report, hand off to **mdBrown**.
 
 ## Requirements
 
-`pdftotext` (poppler-utils) on PATH. Git Bash on Windows ships a usable build;
-otherwise `winget install oschwartz10612.Poppler`, `brew install poppler`, or
+`pdftotext` on PATH — either the poppler-utils build or the Xpdf one; both
+accept the flags used here. Git Bash on Windows ships a usable build; otherwise
+`winget install oschwartz10612.Poppler`, `brew install poppler`, or
 `apt install poppler-utils`.

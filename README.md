@@ -68,9 +68,10 @@ One difference class is expected and is reported as `REVIEW`, not failure:
 assuming word hyphenation. It is usually real — `per-seat`, a UUID
 (`e6068bde-aa26-…`), a URL slug. The layout extraction preserves it.
 
-**Requires** `pdftotext` (poppler-utils) on PATH. Git Bash on Windows ships a
-usable build; otherwise `winget install oschwartz10612.Poppler`,
-`brew install poppler`, or `apt install poppler-utils`.
+**Requires** `pdftotext` on PATH — either the poppler-utils build or the Xpdf
+one; both accept the flags used here. Git Bash on Windows ships a usable build;
+otherwise `winget install oschwartz10612.Poppler`, `brew install poppler`, or
+`apt install poppler-utils`.
 
 ---
 
