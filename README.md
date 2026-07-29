@@ -104,8 +104,14 @@ Same input, same page, every time.
 
 ATX headings · thematic breaks · tables incl. `:---:` alignment · ordered and
 unordered lists with one level of nesting · blockquotes · fenced code blocks ·
-YAML frontmatter (skipped) · inline code, images, links, bold, italic,
-strikethrough.
+YAML frontmatter (skipped) · backslash escapes · inline code, images, links,
+bold, italic, strikethrough.
+
+`verify-html.cjs` checks text equality **and** lints the source for ambiguous
+emphasis — runs of three or more `*`, unbalanced markers. That second check
+exists because text comparison is structurally blind to it: when
+`0105715****` sits inside a bold span the mask is eaten as delimiters, the
+number renders as `0105715`, and both character streams still match.
 
 **Not supported, deliberately:** raw HTML passthrough (escaped instead), setext
 headings, reference links, footnotes, definition lists, task lists. The scope is

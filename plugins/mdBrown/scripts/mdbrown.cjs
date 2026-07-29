@@ -17,8 +17,8 @@
  *
  * Supported Markdown: ATX headings, thematic breaks, tables (incl. :---:
  * alignment), ordered/unordered lists with one level of nesting, blockquotes,
- * fenced code blocks, YAML frontmatter (skipped), and inline code / images /
- * links / bold / italic / strikethrough.
+ * fenced code blocks, YAML frontmatter (skipped), backslash escapes, and inline
+ * code / images / links / bold / italic / strikethrough.
  *
  * Deliberately NOT supported: raw HTML passthrough (escaped instead), setext
  * headings, reference links, footnotes, definition lists, task lists.
@@ -63,18 +63,23 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&
  * (pipes, asterisks, brackets) is never interpreted.
  */
 const SEN = String.fromCharCode(0);            // sentinel — cannot occur in Markdown source
-const RE_SEN = new RegExp(SEN + '(\\d+)' + SEN, 'g');
+const RE_TOKEN = new RegExp(SEN + '([CE])(\\d+)' + SEN, 'g');
+const RE_ESCAPE = /\\([\\`*_{}\[\]()#+\-.!~|<>])/g;
 
 function inline(s) {
-  const code = [];
-  s = s.replace(/`([^`]+)`/g, (_, c) => { code.push(c); return SEN + (code.length - 1) + SEN; });
+  const code = [], lit = [];
+  // Code spans first: backslash escapes do not apply inside them.
+  s = s.replace(/`([^`]+)`/g, (_, c) => { code.push(c); return SEN + 'C' + (code.length - 1) + SEN; });
+  // Then backslash escapes, so \* is content and never an emphasis marker.
+  s = s.replace(RE_ESCAPE, (_, ch) => { lit.push(ch); return SEN + 'E' + (lit.length - 1) + SEN; });
   s = esc(s);
   s = s.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
   s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
   s = s.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-  s = s.replace(RE_SEN, (_, i) => '<code>' + esc(code[+i]) + '</code>');
+  s = s.replace(RE_TOKEN, (_, kind, i) =>
+    kind === 'C' ? '<code>' + esc(code[+i]) + '</code>' : esc(lit[+i]));
   return s;
 }
 

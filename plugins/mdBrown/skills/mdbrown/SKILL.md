@@ -51,9 +51,20 @@ the point.
 node ${CLAUDE_PLUGIN_ROOT}/scripts/verify-html.cjs "<input.md>" "<output.html>"
 ```
 
-Strips tags from the HTML and syntax from the Markdown, then compares both with
-whitespace removed. `OK — text identical` means no cell, list item or link label
-was dropped. A mismatch prints the exact divergence point.
+Two checks run. **Text equality** compares both character streams with
+whitespace removed — `OK text identical` means no cell, list item or link label
+was dropped. **Ambiguity lint** reads the source for runs of three or more
+emphasis characters and unbalanced marker counts.
+
+Take the lint seriously even though it exits 0. It covers the one failure text
+comparison cannot see: in `**…휴대폰번호(0105715****), 학생 이름…**` the four
+masking asterisks are eaten as delimiters, the number renders as `0105715` with
+the mask gone, and both streams still match. The document now says something
+different and the comparison is happy.
+
+When it warns, **do not silently edit the user's source.** Report the line, show
+what it renders as, and offer the fix — escape the literals (`\*\*\*\*`) or wrap
+them in backticks. Add `--strict` to make warnings fatal in a pipeline.
 
 Worth also checking, cheaply, that element counts match the source: tables,
 `<tr>`, `<strong>`, `<a>`. A structural bug can preserve text while wrecking a
@@ -63,8 +74,8 @@ table.
 
 ATX headings · thematic breaks · tables including `:---:` alignment · ordered and
 unordered lists with one level of nesting · blockquotes · fenced code blocks ·
-YAML frontmatter (skipped) · inline code, images, links, bold, italic,
-strikethrough.
+YAML frontmatter (skipped) · backslash escapes · inline code, images, links,
+bold, italic, strikethrough.
 
 **Not supported, by choice:** raw HTML passthrough (escaped instead), setext
 headings, reference links, footnotes, definition lists, task lists. If a
