@@ -291,7 +291,7 @@ h4,h5,h6{font-size:.98rem; font-weight:700; margin:26px 0 10px; color:var(--ink-
 h1+p{color:var(--ink-2); font-size:.94rem; margin-top:0}
 p{margin:0 0 17px}
 hr{border:0; height:1px; background:var(--line); margin:44px 0}
-h2+hr,hr+h2{display:none}
+h2+hr,hr:has(+h2){display:none}
 a{color:var(--accent); text-decoration:none;
   border-bottom:1px solid color-mix(in srgb,var(--accent) 34%,transparent)}
 a:hover{color:var(--accent-ink); border-bottom-color:currentColor}
