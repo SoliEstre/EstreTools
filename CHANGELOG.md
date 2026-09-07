@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 — 2026-09-07
+
+- Fix section headings disappearing after a Markdown horizontal rule. Hide only
+  redundant horizontal rules adjacent to `h2`, preserving headings on screen and
+  in print. Add browser coverage for heading visibility in both modes.
+- Regenerate existing HTML reports to apply the corrected inline stylesheet.
+
 ## 0.3.0 — 2026-09-07
 
 - mdbrown renders Mermaid fences to static inline SVG using local Chrome, Edge or

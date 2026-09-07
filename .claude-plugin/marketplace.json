@@ -5,7 +5,7 @@
     "url": "https://github.com/SoliEstre"
   },
   "metadata": {
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Document tools for Claude Code and Cowork: recover Markdown from PDFs, and render Markdown with Mermaid diagrams as portable HTML reports."
   },
   "plugins": [
@@ -55,7 +55,7 @@
         "diagram",
         "svg"
       ],
-      "version": "0.3.0",
+      "version": "0.3.1",
       "keywords": [
         "markdown",
         "html",

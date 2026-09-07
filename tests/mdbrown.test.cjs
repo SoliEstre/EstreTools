@@ -65,6 +65,13 @@ test('real SVG rendering, integrity checks, offline viewer, zoom, pan and print'
   page.on('request', request => { if (/^https?:/.test(request.url())) external.push(request.url()); });
   await page.setViewport({ width: 1000, height: 700 });
   await page.goto(pathToFileURL(output).href);
+  const assertHeadingsVisible = async () => {
+    assert.deepEqual(await page.$$eval('main h2', elements => elements.map(element => ({
+      text: element.textContent,
+      visible: getComputedStyle(element).display !== 'none' && element.getBoundingClientRect().height > 0
+    }))), [{ text: '처리 흐름', visible: true }, { text: '호출 순서', visible: true }]);
+  };
+  await assertHeadingsVisible();
   await page.click('.mmd-full');
   assert.equal(await page.$eval('#mmdOverlay', element => element.open), true);
   await page.click('[data-act="plus"]');
@@ -83,6 +90,7 @@ test('real SVG rendering, integrity checks, offline viewer, zoom, pan and print'
   await page.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
   assert.equal(await page.$$eval('.mermaid-rendered > svg', elements => elements.length), 2);
   await page.emulateMediaType('print');
+  await assertHeadingsVisible();
   assert.equal(await page.$eval('.mmd-full', element => getComputedStyle(element).display), 'none');
   await page.setJavaScriptEnabled(false); await page.reload();
   assert.equal(await page.$$eval('.mermaid-rendered > svg', elements => elements.length), 2);

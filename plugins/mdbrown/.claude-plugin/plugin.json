@@ -1,6 +1,6 @@
 {
   "name": "mdbrown",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Markdown to a portable HTML report with static Mermaid diagrams, fullscreen zoom and pan, CJK typography, dark mode, print styles, and source verification. 마크다운 HTML 변환 · 머메이드 다이어그램.",
   "author": {
     "name": "SoliEstre",

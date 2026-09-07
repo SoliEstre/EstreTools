@@ -9,7 +9,11 @@ flowchart LR
   A["요청 & 확인"] --> B["결과 <완료>"]
 ```
 
+---
+
 ## 호출 순서
+
+---
 
 ```mermaid
 sequenceDiagram
