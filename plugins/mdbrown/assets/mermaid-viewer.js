@@ -31,11 +31,14 @@
     stopPan();
     opener.focus();
   }
-  overlay.addEventListener('close', restore);
-  window.addEventListener('beforeprint', () => { if (overlay.open) { overlay.close(); restore(); } });
+  function close() { overlay.close(); restore(); }
+  // Native dialog close events are queued; restore before another open or print.
+  overlay.addEventListener('close', () => { if (!overlay.open) restore(); });
+  overlay.addEventListener('cancel', event => { event.preventDefault(); close(); });
+  window.addEventListener('beforeprint', () => { if (overlay.open) close(); });
   overlay.querySelector('.mmd-head').addEventListener('click', event => {
     const action = event.target.closest('button')?.dataset.act;
-    if (action === 'close') overlay.close();
+    if (action === 'close') close();
     else if (action === 'plus') setScale(scale * 1.25);
     else if (action === 'minus') setScale(scale / 1.25);
     else if (action === 'fit') {
