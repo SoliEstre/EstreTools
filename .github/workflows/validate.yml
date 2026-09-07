@@ -1,0 +1,29 @@
+name: Validate plugins
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: plugins/mdbrown/package-lock.json
+      - run: node scripts/validate-marketplace.cjs
+      - run: npm ci --prefix plugins/mdbrown --ignore-scripts --no-audit --no-fund
+      - run: node --test tests/mdbrown.test.cjs
+        env:
+          MDBROWN_TEST_BROWSER: '1'
+          MDBROWN_BROWSER: /usr/bin/google-chrome
+          MDBROWN_NO_SANDBOX: '1'
+      - run: python3 scripts/package-release.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugins
+          path: dist/*.zip

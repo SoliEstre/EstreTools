@@ -5,11 +5,12 @@ description: >
   inlined, no CDN, no fonts fetched, no build step — then verify the output
   carries exactly the source text. Light/dark aware, CJK-tuned typography,
   sticky section index, responsive tables, and a separate print stylesheet so
-  the page prints back to a clean PDF. Use when asked to turn Markdown into
+  the page prints back to a clean PDF. Mermaid fences can be rendered to static
+  SVG with fullscreen zoom and pan. Use when asked to turn Markdown into
   HTML, produce a shareable or printable report from a .md, or publish notes as
   a single portable page.
   Korean triggers: md를 html로, html로 뽑아줘, 리포트 html, 마크다운 html 변환,
-  단일 파일 html, 인쇄용 html.
+  단일 파일 html, 인쇄용 html, 머메이드 다이어그램.
   Do NOT use for a website, a multi-page docs site, or when the user wants a
   React/Vue component — this produces one standalone document.
 ---
@@ -19,7 +20,7 @@ description: >
 ## Run the script — do not hand-write the HTML
 
 ```bash
-node ${CLAUDE_PLUGIN_ROOT}/scripts/mdbrown.cjs "<input.md>" ["<output.html>"]
+node "${CLAUDE_PLUGIN_ROOT}/scripts/mdbrown.cjs" "<input.md>" ["<output.html>"]
 ```
 
 Output defaults to the input path with `.html`.
@@ -44,17 +45,50 @@ the point.
 | `--no-toc` | Omit the section sidebar (auto-omitted when the document has ≤1 `##` heading) |
 | `--title <text>` | Override `<title>`; defaults to the H1 text |
 | `--lang <code>` | `<html lang>` value, default `ko` |
+| `--mermaid` | Require static SVG for every Mermaid fence; fail without writing output if rendering fails |
+| `--no-mermaid` | Leave Mermaid as code; no browser or extra packages needed |
+| `--browser <path>` | Chrome/Edge/Chromium executable; also accepts `MDBROWN_BROWSER` |
+
+## Mermaid diagrams
+
+Default mode attempts static SVG rendering for Mermaid fences. If local packages
+or a browser are unavailable, or a diagram has invalid syntax, it warns and keeps
+that code block. Report those warnings; text verification passing does not mean
+every requested diagram was rendered.
+
+When the user wants diagrams, use `--mermaid`. If dependencies are missing, install
+the locked optional renderer packages (Node 22.12+):
+
+```bash
+npm ci --prefix "${CLAUDE_PLUGIN_ROOT}"
+```
+
+This downloads Mermaid and puppeteer-core, not a browser. Use an existing local
+Chrome, Edge or Chromium in the environment executing the script. An isolated
+Cowork runtime cannot use the host computer's browser path. If none is available,
+report the prerequisite and retain code only if that meets the requested output.
+Do not silently weaken a browser sandbox to make a run succeed. The
+`MDBROWN_NO_SANDBOX=1` override is for an already isolated, trusted CI/container.
+
+SVGs and the small viewer are inlined; recipients need no package installation or
+network. Diagram content stays visible without JavaScript. Fullscreen supports
+wheel zoom, drag pan, fit and Escape. Print hides viewer controls.
 
 ## Verify before reporting
 
 ```bash
-node ${CLAUDE_PLUGIN_ROOT}/scripts/verify-html.cjs "<input.md>" "<output.html>"
+node "${CLAUDE_PLUGIN_ROOT}/scripts/verify-html.cjs" "<input.md>" "<output.html>"
 ```
 
 Two checks run. **Text equality** compares both character streams with
 whitespace removed — `OK text identical` means no cell, list item or link label
 was dropped. **Ambiguity lint** reads the source for runs of three or more
 emphasis characters and unbalanced marker counts.
+
+For static Mermaid figures, the verifier checks the source fingerprint against
+the Markdown, the SVG fingerprint, document order and total code/diagram count.
+It compares all other text as before. Fingerprints detect accidental changes;
+they do not prove semantic diagram correctness. Check the diagrams visually too.
 
 Take the lint seriously even though it exits 0. It covers the one failure text
 comparison cannot see: in `**…휴대폰번호(0105715****), 학생 이름…**` the four

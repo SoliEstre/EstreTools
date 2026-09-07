@@ -1,4 +1,5 @@
 node_modules/
+dist/
 
 # pdfextract.cjs working directory
 .md-in-pdf2md/

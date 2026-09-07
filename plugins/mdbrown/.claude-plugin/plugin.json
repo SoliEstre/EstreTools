@@ -1,7 +1,7 @@
 {
   "name": "mdbrown",
-  "version": "0.2.0",
-  "description": "Render Markdown into one self-contained HTML report — all CSS inlined, zero external requests, light/dark aware, CJK-tuned typography, sticky section index, and a separate print stylesheet. Deterministic by design: the same Markdown always produces the same page, so a document set stays visually consistent. Ships a verifier that checks text equality and lints the source for ambiguous emphasis, the one defect class text comparison cannot see.",
+  "version": "0.3.0",
+  "description": "Markdown to a portable HTML report with static Mermaid diagrams, fullscreen zoom and pan, CJK typography, dark mode, print styles, and source verification. 마크다운 HTML 변환 · 머메이드 다이어그램.",
   "author": {
     "name": "SoliEstre",
     "url": "https://github.com/SoliEstre"
@@ -20,6 +20,9 @@
     "print",
     "dark-mode",
     "korean",
-    "cjk"
+    "cjk",
+    "mermaid",
+    "diagram",
+    "svg"
   ]
 }

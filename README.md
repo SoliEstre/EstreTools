@@ -1,6 +1,6 @@
 # EstreTools
 
-Small, sharp document tools for [Claude Code](https://claude.com/claude-code).
+Small, sharp document tools for [Claude Code](https://claude.com/claude-code) and Cowork.
 
 Two plugins, one pipeline: **get a real Markdown file back out of a PDF**, then
 **turn Markdown into a report you can actually send someone**.
@@ -24,6 +24,16 @@ reports success on a vibe.
 
 Then restart Claude Code.
 
+**Claude desktop / Cowork:** in **Customize → Plugins → Add marketplace**, enter
+`https://github.com/SoliEstre/EstreTools`, then install `mdbrown`. Use the repository
+URL, not the JSON file or a plugin subfolder. Individual uploadable plugin ZIPs
+are available in [Releases](https://github.com/SoliEstre/EstreTools/releases/latest).
+
+**Already added, but mdbrown is missing?** Run `/plugin marketplace update estretools`
+then `/plugin install mdbrown@estretools`. Older releases called it `mdBrown`;
+0.3.0 includes name migration metadata. See the [installation and troubleshooting
+guide](docs/installation.md) for cache, URL, older-client and organization-policy cases.
+
 Each plugin ships a skill and a command. Ask in passing — *"이 pdf를 md로
 옮겨줘"*, *"이걸 html로 뽑아줘"* — and the skill picks the work up on its own; the
 commands are there for when you want to say so explicitly:
@@ -33,7 +43,8 @@ commands are there for when you want to say so explicitly:
 /mdbrown  report.md
 ```
 
-The scripts also run **standalone** — plain Node, no dependencies, no install:
+The scripts also run **standalone** — ordinary Markdown needs only Node.
+Mermaid rendering uses optional packages and a local browser:
 
 ```bash
 node plugins/md-in-pdf2md/scripts/pdfextract.cjs  report.pdf --out .work
@@ -98,10 +109,26 @@ mail — it renders the same everywhere.
 - **Sticky section index**, auto-built from `##` headings, folded away on narrow
   screens and hidden in print
 - **Separate print stylesheet** — prints back to a clean black-on-white PDF
+- **Mermaid diagrams** — static inline SVG, with fullscreen zoom, pan and fit;
+  diagrams remain visible offline and with JavaScript disabled
 
 ```bash
 node scripts/mdbrown.cjs input.md [output.html] [--no-toc] [--title "…"] [--lang ko]
 ```
+
+For Mermaid, install the optional renderer once (Node 22.12+), then use the local
+Chrome/Edge/Chromium already installed in the execution environment:
+
+```bash
+npm ci --prefix plugins/mdbrown
+node plugins/mdbrown/scripts/mdbrown.cjs input.md output.html --mermaid
+```
+
+Default mode attempts Mermaid rendering and retains code with a warning when it
+cannot render. `--mermaid` requires all diagrams to render before writing output;
+`--no-mermaid` leaves code untouched. `--browser <path>` or `MDBROWN_BROWSER`
+selects a browser explicitly. No browser is downloaded by npm, and no Mermaid
+runtime or external dependency is included in the resulting report.
 
 ### Why a script and not a prompt
 

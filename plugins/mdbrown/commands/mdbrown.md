@@ -1,6 +1,6 @@
 ---
 description: Render a Markdown file into one self-contained HTML report
-argument-hint: <input.md> [output.html] [--no-toc] [--title <text>] [--lang <code>]
+argument-hint: <input.md> [output.html] [--mermaid|--no-mermaid] [--browser <path>] [--no-toc] [--title <text>] [--lang <code>]
 allowed-tools: Skill, Bash, Read, SendUserFile
 ---
 
@@ -8,7 +8,8 @@ Render the Markdown given in `$ARGUMENTS` to a self-contained HTML report.
 
 First argument is the input `.md`. An optional second argument is the output
 path — without it, the output is the input path with `.html`. Remaining flags
-pass straight through: `--no-toc`, `--title <text>`, `--lang <code>`. If no
+pass straight through: `--no-toc`, `--title <text>`, `--lang <code>`,
+`--mermaid`, `--no-mermaid`, `--browser <path>`. If no
 input path was given, ask for one rather than guessing.
 
 Invoke the **`mdbrown:mdbrown`** skill and follow its procedure. The skill is the

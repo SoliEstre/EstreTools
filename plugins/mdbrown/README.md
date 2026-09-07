@@ -6,12 +6,20 @@ All CSS inlined. No CDN, no webfont fetch, no build step, no `node_modules`.
 Open it offline, drop it on an intranet share, attach it to mail — it renders
 the same everywhere.
 
+Mermaid diagrams are rendered to static inline SVG during generation. The
+optional renderer needs local packages and a browser; the delivered HTML does not.
+
 ## Install
 
 ```bash
 /plugin marketplace add SoliEstre/EstreTools
 /plugin install mdbrown@estretools
 ```
+
+For Cowork, add `https://github.com/SoliEstre/EstreTools` through **Customize →
+Plugins → Add marketplace**. For missing entries, update `estretools` first.
+See [installation troubleshooting](../../docs/installation.md) and
+[uploadable ZIP releases](https://github.com/SoliEstre/EstreTools/releases/latest).
 
 Or just run the script — it is plain Node with zero dependencies:
 
@@ -45,6 +53,36 @@ skill, which holds the procedure.
 - **Sticky section index** built from `##` headings; folds below the content on
   narrow screens, hidden in print
 - **Separate print stylesheet** — prints back to a clean black-on-white PDF
+- **Mermaid** — static SVG plus a fullscreen viewer with wheel zoom, drag pan,
+  screen fit, Escape and keyboard focus restoration
+
+## Mermaid setup and options
+
+From this plugin directory, using Node 22.12+:
+
+```bash
+npm ci
+node scripts/mdbrown.cjs input.md output.html --mermaid
+```
+
+This installs locked Mermaid and puppeteer-core packages. It does not download a
+browser. Chrome, Edge or Chromium must exist in the execution environment. Common
+Windows, macOS and Linux locations are detected; use `--browser "<executable>"`
+or `MDBROWN_BROWSER` for another path.
+
+| Mode | Behavior |
+| --- | --- |
+| Default | Render Mermaid if available; warn and keep code for failures |
+| `--mermaid` | Require every Mermaid diagram; any failure leaves the output file unchanged |
+| `--no-mermaid` | Keep Mermaid as ordinary fenced code, without extra dependencies |
+
+The HTML contains static SVG and a small inline viewer, with no Mermaid runtime
+and no external requests introduced by the renderer. Diagram content remains
+visible with JavaScript disabled. Repeated renders are deterministic with the same
+Mermaid version, browser and fonts; different environments can change layout.
+
+The browser sandbox is enabled by default. `MDBROWN_NO_SANDBOX=1` is available
+only for already isolated trusted CI/containers that require it.
 
 ## Verify
 
@@ -57,6 +95,11 @@ Two independent checks.
 **Text equality** — strips tags from the HTML and syntax from the Markdown, then
 compares with whitespace removed. Escape-aware, so a `\*` is compared as
 content. Exits non-zero on mismatch and prints the divergence point.
+
+Fenced code is compared literally. For static Mermaid figures, verification
+checks source/SVG fingerprints and block counts, replacing each SVG with its
+original source for the ordered text comparison. This catches lost, changed or
+duplicated blocks; it is an integrity check, not proof of diagram semantics.
 
 **Ambiguity lint** — because text equality alone is blind to one real failure:
 emphasis markers being eaten. In

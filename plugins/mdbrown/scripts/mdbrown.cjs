@@ -28,22 +28,27 @@
 'use strict';
 
 const fs = require('fs');
+const fences = require('./fences.cjs');
 
 // ─────────────────────────────── CLI ───────────────────────────────
 
 function usage() {
-  console.log('Usage: node mdbrown.cjs <input.md> [output.html] [--no-toc] [--title <text>] [--lang <code>]');
+  console.log('Usage: node mdbrown.cjs <input.md> [output.html] [--no-toc] [--title <text>] [--lang <code>] [--mermaid|--no-mermaid] [--browser <path>]');
 }
 
 const argv = process.argv.slice(2);
-const opt = { toc: true, title: null, lang: 'ko' };
+const opt = { toc: true, title: null, lang: 'ko', mermaid: 'auto' };
 const positional = [];
 
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === '--no-toc') opt.toc = false;
-  else if (a === '--title') opt.title = argv[++i];
-  else if (a === '--lang') opt.lang = argv[++i];
+  else if (a === '--mermaid') opt.mermaid = 'required';
+  else if (a === '--no-mermaid') opt.mermaid = false;
+  else if (['--title', '--lang', '--browser'].includes(a)) {
+    if (!argv[i + 1] || argv[i + 1].startsWith('--')) { console.error('Missing value: ' + a); process.exit(2); }
+    opt[a.slice(2)] = argv[++i];
+  }
   else if (a === '-h' || a === '--help') { usage(); process.exit(0); }
   else if (a.startsWith('--')) { console.error('Unknown option: ' + a); usage(); process.exit(2); }
   else positional.push(a);
@@ -56,7 +61,7 @@ const OUT = positional[1] || SRC.replace(/\.md$/i, '') + '.html';
 
 // ──────────────────────────── inline pass ────────────────────────────
 
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 /**
  * Code spans are lifted out before escaping so that markdown inside them
@@ -87,7 +92,7 @@ function inline(s) {
 
 const RE_H     = /^(#{1,6})\s+(.*)$/;
 const RE_HR    = /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/;
-const RE_FENCE = /^\s*(?:```|~~~)\s*(\S*)\s*$/;
+const RE_FENCE = { test: line => !!fences.opening(line) };
 const RE_TABLE = /^\s*\|/;
 const RE_UL    = /^(\s*)[-*+]\s+(.*)$/;
 const RE_OL    = /^(\s*)\d+\.\s+(.*)$/;
@@ -125,12 +130,12 @@ while (i < L.length) {
   if (!line.trim()) { i++; continue; }
 
   // fenced code — must be checked before HR so that ``` is not eaten
-  let m = line.match(RE_FENCE);
+  let m = fences.opening(line);
   if (m) {
-    const lang = m[1];
+    const lang = m.lang;
     const buf = [];
     i++;
-    while (i < L.length && !RE_FENCE.test(L[i])) { buf.push(L[i]); i++; }
+    while (i < L.length && !fences.closing(L[i], m)) { buf.push(L[i]); i++; }
     i++; // closing fence
     out.push('<pre><code' + (lang ? ' class="language-' + esc(lang) + '"' : '') + '>' +
              esc(buf.join('\n')) + '</code></pre>');
@@ -349,6 +354,8 @@ ${nav}
 </html>
 `;
 
-fs.writeFileSync(OUT, html, 'utf8');
-console.log('mdbrown → ' + OUT);
-console.log('  blocks ' + out.length + ' · sections ' + toc.length + ' · ' + Buffer.byteLength(html) + ' bytes');
+require('./mermaid.cjs').render(html, opt).then(result => {
+  fs.writeFileSync(OUT, result, 'utf8');
+  console.log('mdbrown → ' + OUT);
+  console.log('  blocks ' + out.length + ' · sections ' + toc.length + ' · ' + Buffer.byteLength(result) + ' bytes');
+}).catch(error => { console.error('FAIL ' + error.message); process.exitCode = 1; });

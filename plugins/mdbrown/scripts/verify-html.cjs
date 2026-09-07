@@ -30,6 +30,8 @@
 'use strict';
 
 const fs = require('fs');
+const fences = require('./fences.cjs');
+const { fingerprint } = require('./mermaid.cjs');
 
 const args = process.argv.slice(2);
 const STRICT = args.includes('--strict');
@@ -51,6 +53,7 @@ function htmlText(h) {
        .replace(/<script[\s\S]*?<\/script>/gi, '')
        .replace(/<nav[\s\S]*?<\/nav>/gi, '')
        .replace(/<title>[\s\S]*?<\/title>/gi, '')
+       .replace(/<img\b[^>]*\balt="([^"]*)"[^>]*>/gi, '$1')
        .replace(/<[^>]+>/g, '');
   // &amp; last, or "&amp;lt;" would collapse incorrectly
   return h.replace(/&lt;/g, '<').replace(/&gt;/g, '>')
@@ -59,9 +62,10 @@ function htmlText(h) {
 }
 
 function mdText(m) {
-  const code = [], lit = [];
+  const code = [], lit = [], blocks = [];
 
   let s = m.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');       // YAML frontmatter
+  s = fences.protect(s, body => { blocks.push(body); return SEN + 'F' + (blocks.length - 1) + SEN; });
 
   // Protect code spans and backslash escapes before any marker is stripped,
   // mirroring the renderer, so their contents are compared rather than removed.
@@ -83,17 +87,42 @@ function mdText(m) {
     .replace(/^#{1,6}\s+/gm, '')
     .replace(/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/gm, '');
 
-  return s.replace(RE_TOKEN, (_, kind, i) => kind === 'C' ? code[+i] : lit[+i]);
+  return s.replace(RE_TOKEN, (_, kind, i) => kind === 'C' ? code[+i] : lit[+i])
+    .replace(/\x00F(\d+)\x00/g, (_, i) => blocks[+i]);
 }
 
 const strip = s => s.replace(/[\s ]+/g, '');
 
-const A = strip(mdText(fs.readFileSync(MD, 'utf8')));
-const B = strip(htmlText(fs.readFileSync(HTML, 'utf8')));
+const markdown = fs.readFileSync(MD, 'utf8');
+let rendered = fs.readFileSync(HTML, 'utf8');
+let failed = false, fenceCount = 0, diagramCount = 0;
+const sources = new Map();
+fences.protect(markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ''), (body, lang) => {
+  fenceCount++;
+  if (lang === 'mermaid') sources.set(fingerprint(body), body);
+  return '';
+});
+rendered = rendered.replace(/<figure class="mermaid-rendered" data-mermaid-source="([a-f0-9]{64})" data-mermaid-svg="([a-f0-9]{64})">([\s\S]*?)<\/figure>/g,
+  (_, sourceHash, svgHash, svg) => {
+    diagramCount++;
+    const source = sources.get(sourceHash);
+    if (source === undefined || !/^<svg\b[\s\S]+<\/svg>$/.test(svg) || fingerprint(svg) !== svgHash) {
+      failed = true;
+      console.error('FAIL Mermaid source/SVG integrity at diagram ' + diagramCount);
+    }
+    // Compare the exact preserved source in document order, not the SVG's labels/CSS.
+    return '<pre><code>' + (source || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</code></pre>';
+  });
+const preCount = (rendered.match(/<pre>/g) || []).length;
+if (preCount !== fenceCount || /<figure class="mermaid-rendered"/.test(rendered)) {
+  failed = true;
+  console.error('FAIL code/diagram structure: expected ' + fenceCount + ' blocks, found ' + preCount);
+}
+if (diagramCount) console.log('Mermaid ' + diagramCount + ' static SVG(s): source and SVG integrity checked.');
+const A = strip(mdText(markdown));
+const B = strip(htmlText(rendered));
 
 console.log('md ' + A.length + ' chars · html ' + B.length + ' chars');
-
-let failed = false;
 
 if (A === B) {
   console.log('OK   text identical, nothing lost or duplicated.');
@@ -110,10 +139,11 @@ if (A === B) {
 
 const warnings = [];
 const src = fs.readFileSync(MD, 'utf8').split(/\r?\n/);
-let inFence = false;
+let inFence = null;
 
 src.forEach((line, n) => {
-  if (/^\s*(?:```|~~~)/.test(line)) { inFence = !inFence; return; }
+  if (inFence) { if (fences.closing(line, inFence)) inFence = null; return; }
+  inFence = fences.opening(line);
   if (inFence) return;
 
   // blank out code spans, escaped characters and a leading "*" list marker
